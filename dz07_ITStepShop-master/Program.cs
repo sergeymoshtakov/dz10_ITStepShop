@@ -10,6 +10,7 @@ using Models.Repository.IRepository;
 using Models.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Google;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +20,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthorization(options =>
-    {
-        options.AddPolicy("AdminManager", policy => policy.RequireRole(WC.AdminRole, WC.ManagerRole));
-        options.AddPolicy("Customer", policy => policy.RequireRole(WC.CustomerRole));
-    }
+{
+    options.AddPolicy("AdminManager", policy => policy.RequireRole(WC.AdminRole, WC.ManagerRole));
+    options.AddPolicy("Customer", policy => policy.RequireRole(WC.CustomerRole));
+}
 );
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
@@ -38,15 +39,15 @@ builder.Services.AddSession(Options =>
 });
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
-        options.Password.RequiredLength = 3;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.User.RequireUniqueEmail = true;
-    })
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.User.RequireUniqueEmail = true;
+})
      .AddDefaultTokenProviders()
      .AddDefaultUI()
      .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -62,6 +63,21 @@ builder.Services.ConfigureApplicationCookie(options =>
 
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
     options.SlidingExpiration = true;
+});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.AccessDeniedPath = "/Account/AccessDenied";
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
+    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
 });
 
 #region Repository
