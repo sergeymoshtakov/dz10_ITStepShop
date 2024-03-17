@@ -1,0 +1,12 @@
+﻿@model ITStepShop.Models.ShopUser
+
+<h2>User Details</h2>
+
+<div>
+    <h4>User ID: @Model.Id</h4>
+    <h4>Username: @Model.UserName</h4>
+    <h4>Full Name: @Model.Email</h4>
+    <h4>Delivery Address: @Model.AddressDelivery</h4>
+</div>
+
+<a asp-action="Index">Back to List</a>

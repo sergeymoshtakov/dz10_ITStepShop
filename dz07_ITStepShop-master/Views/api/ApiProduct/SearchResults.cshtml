@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Models.Data.Product>
+
+<h1>Search Results</h1>
+
+@foreach (var product in Model)
+{
+    <div>
+        <h4>@product.Name</h4>
+        <p>Category: @product.Category.CategoryName</p>
+    </div>
+}

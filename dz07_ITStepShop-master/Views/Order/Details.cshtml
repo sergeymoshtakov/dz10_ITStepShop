@@ -1,0 +1,13 @@
+﻿@model ITStepShop.Models.Order
+
+<h2>Order Details</h2>
+
+<div>
+    <h4>Order ID: @Model.Id</h4>
+    <h4>Customer: @Model.CustomerId</h4>
+    <h4>Product: @Model.ProductId</h4>
+    <h4>Quantity: @Model.Quantity</h4>
+    <h4>Order Date: @Model.OrderDate.ToShortDateString()</h4>
+</div>
+
+<a asp-action="Index">Back to List</a>
